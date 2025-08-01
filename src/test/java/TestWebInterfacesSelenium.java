@@ -31,7 +31,7 @@ public class TestWebInterfacesSelenium {
         ChromeOptions options = new ChromeOptions(); // Создается объект ChromeOptions, куда добавляются аргументы командной строки:
         options.addArguments("--disable-dev-shm-usage"); // Отключает использование /dev/shm, иногда полезно при работе на удаленных серверах.
         options.addArguments("--no-sandbox"); // Отключает песочницу безопасности Chrome (обычно применяется в CI/CD системах).
-//        options.addArguments("--headless"); // Позволяет запустить Chrome в headless режиме (без графического интерфейса), удобно для серверных окружений.
+        options.addArguments("--headless"); // Позволяет запустить Chrome в headless режиме (без графического интерфейса), удобно для серверных окружений.
         driver = new ChromeDriver(options); // Создается новый экземпляр ChromeDriver с указанными параметрами.
         driver.get("http://localhost:9999"); // После запуска, браузер переходит на адрес http://localhost:9999. Обычно это локально запущенный сайт или приложение.
     }
