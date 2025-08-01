@@ -31,7 +31,7 @@ public class TestWebInterfacesSelenium {
         ChromeOptions options = new ChromeOptions(); // Создается объект ChromeOptions, куда добавляются аргументы командной строки:
         options.addArguments("--disable-dev-shm-usage"); // Отключает использование /dev/shm, иногда полезно при работе на удаленных серверах.
         options.addArguments("--no-sandbox"); // Отключает песочницу безопасности Chrome (обычно применяется в CI/CD системах).
-        options.addArguments("--headless"); // Позволяет запустить Chrome в headless режиме (без графического интерфейса), удобно для серверных окружений.
+//        options.addArguments("--headless"); // Позволяет запустить Chrome в headless режиме (без графического интерфейса), удобно для серверных окружений.
         driver = new ChromeDriver(options); // Создается новый экземпляр ChromeDriver с указанными параметрами.
         driver.get("http://localhost:9999"); // После запуска, браузер переходит на адрес http://localhost:9999. Обычно это локально запущенный сайт или приложение.
     }
@@ -70,5 +70,17 @@ public class TestWebInterfacesSelenium {
         WebElement result = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
         assertTrue(result.isDisplayed());
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", result.getText().trim());
+    }
+
+    @Test
+
+    public void shouldFillOutAndSubmitForm2() {
+
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Maxim");
+        form.findElement(By.cssSelector(".button")).click();
+        WebElement result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub"));
+        assertTrue(result.isDisplayed());
+        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", result.getText().trim());
     }
 }
