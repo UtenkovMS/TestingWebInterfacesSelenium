@@ -9,8 +9,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,21 +44,7 @@ public class TestWebInterfacesSelenium {
 
     @Test
 
-    public void shouldFillOutAndSubmitForm() { // Должен заполнить и отправить форму
-
-        List<WebElement> inputs = driver.findElement(By.cssSelector("form")).findElements(By.cssSelector("input"));
-        inputs.get(0).sendKeys("Утенков Максим");
-        inputs.get(1).sendKeys("+79273544499");
-        driver.findElement(By.cssSelector(".checkbox")).click();
-        driver.findElement(By.cssSelector(".button")).click();
-        WebElement result = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
-        assertTrue(result.isDisplayed());
-        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", result.getText().trim());
-    }
-
-    @Test
-
-    public void shouldFillOutAndSubmitForm1() {
+    public void shouldFillOutAndSubmitForm() {
 
         WebElement form = driver.findElement(By.cssSelector("form"));
         form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Максим Утенков");
@@ -74,13 +58,69 @@ public class TestWebInterfacesSelenium {
 
     @Test
 
-    public void shouldFillOutAndSubmitForm2() {
+    public void shouldFillInNameFieldWithInvalidDataAndReceiveWarning() {
 
         WebElement form = driver.findElement(By.cssSelector("form"));
         form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Maxim");
+        form.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79375794633");
+        form.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         form.findElement(By.cssSelector(".button")).click();
         WebElement result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub"));
         assertTrue(result.isDisplayed());
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", result.getText().trim());
     }
+
+    @Test
+
+    public void shouldFillInPhoneFieldWithInvalidDataAndReceiveWarning() {
+
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Максим");
+        form.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("12345678912");
+        form.findElement(By.cssSelector("[data-test-id='agreement']")).click();
+        form.findElement(By.cssSelector(".button")).click();
+        WebElement result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub"));
+        assertTrue(result.isDisplayed());
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", result.getText().trim());
+    }
+
+    @Test
+
+    public void shouldFillFIFieldsWithValidDataButCcheckboxNotCheckedAndWarningDisplayed() {
+
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Максим");
+        form.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("12345678912");
+        form.findElement(By.cssSelector(".button")).click();
+        WebElement result = driver.findElement(By.cssSelector("[data-test-id='agreement'] span.checkbox__text"));
+        assertTrue(result.isDisplayed());
+        assertEquals("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй", result.getText().trim());
+    }
+
+    @Test
+
+    public void shouldSubmitFormIfNameFieldEmptyAndWarningDisplayed() {
+
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("12345678912");
+        form.findElement(By.cssSelector("[data-test-id='agreement']")).click();
+        form.findElement(By.cssSelector(".button")).click();
+        WebElement result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub"));
+        assertTrue(result.isDisplayed());
+        assertEquals("Поле обязательно для заполнения", result.getText().trim());
+    }
+
+    @Test
+
+    public void shouldSubmitFormIfPhoneFieldEmptyAndWarningDisplayed() {
+
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Максим");
+        form.findElement(By.cssSelector("[data-test-id='agreement']")).click();
+        form.findElement(By.cssSelector(".button")).click();
+        WebElement result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub"));
+        assertTrue(result.isDisplayed());
+        assertEquals("Поле обязательно для заполнения", result.getText().trim());
+    }
+
 }
